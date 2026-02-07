@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winter Olympic Sport Finder</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f8ff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #quiz-container { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; max-width: 500px; width: 90%; }
+        h1 { color: #2c3e50; font-size: 1.5rem; margin-bottom: 1.5rem; }
+        .btn { display: block; width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 8px; background: #3498db; color: white; font-size: 1rem; cursor: pointer; transition: background 0.3s; }
+        .btn:hover { background: #2980b9; }
+        #result { font-weight: bold; color: #e67e22; font-size: 1.8rem; margin-top: 1rem; }
+        .reset-btn { background: #95a5a6; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <div id="quiz-content">
+        <h1 id="question">Loading...</h1>
+        <div id="options"></div>
+    </div>
+</div>
+
+<script>
+    const tree = {
+        question: "Slide on snow or Slide on ice?",
+        options: {
+            "Slide on Snow": {
+                question: "Gravity or Leg Power?",
+                options: {
+                    "Gravity": {
+                        question: "Me against the world or With my BFFs?",
+                        options: {
+                            "It's me against the world": {
+                                question: "Speed or Style?",
+                                options: {
+                                    "Speed": {
+                                        question: "That's impressive or That's crazy?",
+                                        options: { "That's impressive": "Alpine Skiing (Slalom)", "That's crazy": "Alpine Skiing (Downhill)" }
+                                    },
+                                    "Style": {
+                                        question: "That's impressive or That's crazy?",
+                                        options: { "That's impressive": "Moguls", "That's crazy": "Ski Jumping / Big Air" }
+                                    }
+                                }
+                            },
+                            "With my BFFs": "Ski Cross Relay"
+                        }
+                    },
+                    "Leg power": {
+                        question: "Guns? or Guns!",
+                        options: { "Guns?": "Cross-Country Skiing", "Guns!": "Biathlon" }
+                    }
+                }
+            },
+            "Slide on Ice": {
+                question: "Gravity or Leg Power?",
+                options: {
+                    "Gravity": {
+                        question: "That's impressive or That's crazy?",
+                        options: { "That's impressive": "Luge", "That's crazy": "Skeleton" }
+                    },
+                    "Leg power": {
+                        question: "Speed or Style?",
+                        options: {
+                            "Speed": "Speed Skating",
+                            "Style": {
+                                question: "That's impressive or That's crazy?",
+                                options: { "That's impressive": "Figure Skating", "That's crazy": "Ice Hockey" }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    let currentNode = tree;
+
+    function renderStep() {
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        optionsEl.innerHTML = '';
+
+        if (typeof currentNode === 'string') {
+            questionEl.innerText = "Your Olympic Match is:";
+            const resultEl = document.createElement('div');
+            resultEl.id = 'result';
+            resultEl.innerText = currentNode;
+            optionsEl.appendChild(resultEl);
+
+            const resetBtn = document.createElement('button');
+            resetBtn.innerText = "Start Over";
+            resetBtn.className = "btn reset-btn";
+            resetBtn.onclick = resetQuiz;
+            optionsEl.appendChild(resetBtn);
+        } else {
+            questionEl.innerText = currentNode.question;
+            for (let key in currentNode.options) {
+                const btn = document.createElement('button');
+                btn.innerText = key;
+                btn.className = 'btn';
+                btn.onclick = () => {
+                    currentNode = currentNode.options[key];
+                    renderStep();
+                };
+                optionsEl.appendChild(btn);
+            }
+        }
+    }
+
+    function resetQuiz() {
+        currentNode = tree;
+        renderStep();
+    }
+
+    renderStep();
+</script>
+
+</body>
+</html>
